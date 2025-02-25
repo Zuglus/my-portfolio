@@ -1,9 +1,23 @@
 // pages/index.js
+import { useState } from 'react';
 import { portfolioData } from '../src/data/portfolioData';
+import { projects } from '../src/data/projectsData';
 import PortfolioCard from '../src/components/PortfolioCard';
+import ProjectModal from '../src/components/ProjectModal';
 import Image from 'next/image';
 
 export default function Home() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const openModal = (projectId) => {
+    const project = projects.find((p) => p.id === projectId);
+    setSelectedProject(project);
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+  };
+
   return (
     <div className="min-h-screen bg-primary text-white font-onest">
       <header className="py-16 text-center">
@@ -33,10 +47,14 @@ export default function Home() {
               title={project.title}
               image={project.image}
               alt={project.alt}
-              isFirst={index === 0} // Первая карточка получает priority
+              isFirst={index === 0}
+              onClick={() => openModal(project.id)}
             />
           ))}
         </div>
+        {selectedProject && (
+          <ProjectModal project={selectedProject} onClose={closeModal} />
+        )}
       </main>
     </div>
   );
